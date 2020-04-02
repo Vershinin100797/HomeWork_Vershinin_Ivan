@@ -17,6 +17,6 @@ __author__ = 'Вершинин Иван Александрович'
 
 # Переменная a выглядит таким образом a = float('inf')
 a = float('inf')
-print(bool(a == a**2))
-print(bool(a == a*2))
-print(bool(a > 999999))
+print(a == a**2)
+print(a == a*2)
+print(a > 999999)
