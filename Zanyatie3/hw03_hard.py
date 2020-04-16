@@ -6,10 +6,10 @@ __author__ = 'Вершинин Иван Александрович'
 #x = 2.5
 # вычислите и выведите y
 
-"""equation = 'y = -12x + 11111140.2121'
+equation = 'y = -12x + 11111140.2121'
 x = 2.5
 name = equation.split(' ')
-print(float(name[2][:-1]) * x + float(name[4]))"""
+print(float(name[2][:-1]) * x + float(name[4]))
 
 # Задание-2: Дата задана в виде строки формата 'dd.mm.yyyy'.
 # Проверить, корректно ли введена дата.
@@ -29,7 +29,7 @@ print(float(name[2][:-1]) * x + float(name[4]))"""
 #date = '1.12.1001'
 #date = '-2.10.3001'
 
-"""my_date = input('Введите дату через точку: ')
+my_date = input('Введите дату через точку: ')
 converted_date = my_date.split('.')
 converted_day =  None if len(converted_date[0]) != 2 or 31 < int(converted_date[0]) < 1 else int(converted_date[0])
 converted_month = None if len(converted_date[1]) != 2 or 12 < int(converted_date[1]) or int(converted_date[1]) < 1 else int(converted_date[1])
@@ -38,7 +38,7 @@ converted_year = None if len(converted_date[2]) != 4 or 9999 < int(converted_dat
 if None in (converted_day, converted_month, converted_year):
     print('Не корректен формат даты')
 else:
-    print(f'Дата введена корректно: { my_date}')"""
+    print(f'Дата введена корректно: { my_date}')
 
 # Задание-3: "Перевёрнутая башня" (Задача олимпиадного уровня)
 #
