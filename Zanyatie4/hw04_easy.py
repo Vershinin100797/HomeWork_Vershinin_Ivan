@@ -1,26 +1,23 @@
+__author__ = 'Вершинин Иван Александрович'
+
 # Задание-1:
 # Напишите функцию, переводящую км в мили и выводящую информацию на консоль
 # т.е функция ничего не возвращает, а выводит на консоль ответ самостоятельно
 # Предполагается, что 1км = 1,609 мили
-"""def km_to_miles(km):
-    print(km * 0.62137)
-km_to_miles(5)    """
+
+def km_to_miles(km):
+    print(km * 0.62137)   
+
 # Задание-2:
 # Напишите функцию, округляющую полученное произвольное десятичное число
 # до кол-ва знаков (кол-во знаков передается вторым аргументом).
 # Округление должно происходить по математическим правилам (0.6 --> 1, 0.4 --> 0).
 # Для решения задачи не используйте встроенные функции и функции из модуля math.
 
-"""def my_round(number, ndigits):
+def my_round(number, ndigits):
     number = number*(10**ndigits)+0.41
     number = number//1
     return number/(10**ndigits)
-
-print(my_round(2.1234567, 5))
-print(my_round(2.1999967, 5))
-print(my_round(2.9999967, 5))"""
-
-
 
 # Задание-3:
 # Дан шестизначный номер билета. Определить, является ли билет счастливым.
@@ -29,8 +26,20 @@ print(my_round(2.9999967, 5))"""
 # !!!P.S.: функция не должна НИЧЕГО print'ить, должна возвращать либо True,
 # ибо False (если счастливый и несчастливый соответственно)
 
-lucky_ticket = lambda x: True if sum(list(map(int, str(x)))[:3]) == sum(list(map(int, str(x)))[3:]) else False
+def lucky_ticket(num):
+    _temp = list(str(num))
+    firs, second = (sum(map(int, _temp[:3])), sum(map(int, _temp[3:])))
+    if firs == second:
+        return True
+    return False
 
-print(lucky_ticket(123006))
-print(lucky_ticket(12321))
-print(lucky_ticket(436751))
+if __name__ == '__main__':
+    km_to_miles(5)
+
+    print(my_round(2.1234567, 5))
+    print(my_round(2.1999967, 5))
+    print(my_round(2.9999967, 5))
+
+    print(lucky_ticket(123006))
+    print(lucky_ticket(12321))
+    print(lucky_ticket(436751))
