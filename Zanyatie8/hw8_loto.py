@@ -62,52 +62,81 @@ __author__ = 'Вершинин Иван Александрович'
 """
 
 
+class PlayerException(Exception):
+    def __init__(self, message=None, player=None):
+        self.message = message
+        self.player = player
+
+
+class cached_property(object):
+    def __init__(self, func):
+        self.func = func
+
+    def __get__(self, instance, cls=None):
+        result = instance.__dict__[self.func.__name__] = self.func(instance)
+        return result
+
+
 class Playing_Card(object):
-    def __init__(self, name, computer=0):
-        self.name = name
-        self.computer = computer
+    def __init__(self, name, game_name=None):
+        self.name = name or 'Mister X'
+        self.game_name = game_name
         self.creating_card()
 
     def creating_card(self):
-        self.card = [[' ' for i in range(0, 9)],
-                          [' ' for i in range(0, 9)],
-                          [' ' for i in range(0, 9)]]  
-        rand_nums = sorted(list(random.sample(range(1, 91), 15)))
+
+        self.card = [['' for i in range(0, 9)],
+                          ['' for i in range(0, 9)],
+                          ['' for i in range(0, 9)]]
+        rand_nums = sorted(random.sample(range(1, 91), 15))
 
         k = 0
         for ln in range(3):
-            idx = sorted(list(random.sample(range(0, 9), 5)))
+            idx = sorted(random.sample(range(0, 9), 5))
             for i in range(5):
                 self.card[ln][idx[i]] = rand_nums[k]
                 k += 1
-
         return self.card
 
-    def open_card(self):
-
-        if self.computer == 0:
-            self.nm = 'Игрок'
-        else:
-            self.nm = 'Компьютер'
-
-        l2 = 17 - len(self.name) // 2
+    def create_line(self, name):
+        l2 = 17 - len(name) // 2
         l1 = l2
-        if len(self.name) % 2 != 0:
+        if len(name) % 2 != 0:
             l1 = l2 - 1
+        return '-' * l1 + ' ' + name + ' ' + '-' * l2
 
-        l4 = 17 - len(self.nm) // 2
-        l3 = l4
-        if len(self.nm) % 2 != 0:
-            l3 = l4 - 1
+    @cached_property
+    def get_header(self):
+        return self.create_line(self.name)
 
-        print('-' * l1 + ' ' + self.name + ' ' + '-' * l2)
+    @cached_property
+    def get_footer(self):
+        return self.create_line(self.game_name)
+
+    def open_card(self):
+        print(self.get_header)
 
         for i in range(len(self.card)):
             for j in range(len(self.card[i])):
                 print('{:3}'.format(self.card[i][j]), end=' ')
             print()
 
-        print('-' * l3 + ' ' + self.nm + ' ' + '-' * l4 + '\n')
+        print(self.get_footer)
+
+    def get_cart_items(self):
+        _temp = []
+        for c_item in self.card:
+            _new_list = [item for item in c_item if isinstance(item, int)]
+            _temp += _new_list
+        return _temp
+
+    def del_item(self, item):
+        for c_item in self.card:
+            if item in c_item:
+                c_item[c_item.index(item)] = '-'
+
+    def get_len(self):
+        return len(self.get_cart_items())
 
 
 class Barrels(object):
@@ -125,85 +154,93 @@ class Barrels(object):
 
 
 class Game(object):
-    def __init__(self, player=str, opponent=str):
-        self.player = player
-        self.opponent = opponent
-        self.run_game(player, opponent)
+    def __init__(self):
+        self.players = []
+        self.max_players = 2
+        self.barrel_bag = None
 
+    def _check_type(self):
+        for player in self.players:
+            p_type, p_card = player
 
-    def check_win(self, z):
-        x = 0
-        for i in range(len(z.card)):
-            for j in range(len(z.card[i])):
-                if type(z.card[i][j]) is int:
-                    x += int((z.card[i][j]))
-        if x == 0:
-            print(f'Игрок {z.name} победил!')
-            return False
+            print(f'Ход игрока {p_card.name}')
+            if p_type:
+                self._check_human(p_card)
+            else:
+                self._check_robot(p_card)
 
-    def check(self, x, y):
-        if x.computer == 0:
-            result = 'X'
-            print(f'Ход игрока: {x.name}')
-            while result != 'Y' and result != 'N' and result != 'y' and result != 'n':
-                result = input('Зачеркнуть цифру? (Y/N)')
-                if result != 'Y' and result != 'N' and result != 'y' and result != 'n':
-                    print('Не верное значение. Введите Y или N!')
-
-            flag = 0
-            if result == 'Y' or result == 'y':
-                for line in range(len(x.card)):
-                    if y.number in x.card[line]:
-                        id = int(x.card[line].index(y.number))
-                        x.card[line][id] = '_'
-                        flag = 1
-                if flag != 1:
-                    print(f'Игрок {x.name} проиграл!')
-                    return False
-
-            elif result == 'N' or result == 'n':
-                for line in range(len(x.card)):
-                    if y.number in x.card[line]:
-                        print(f'Игрок {x.name} проиграл!')
-                        return False
-
-        else:
-            for line in range(len(x.card)):
-                if y.number in x.card[line]:
-                    id = int(x.card[line].index(y.number))
-                    x.card[line][id] = '_'
-
-    def run_game(self, player, opponent):
-
-        barrel_bag = Barrels()
-
-        print('Первый игрок: ')
-        self.pl_name = input('Введите имя первого игрока: ')
-        self.pl_is_comp = int(input(f'{self.pl_name} - человек или компьютер? 0 - человек, 1 - компьютер: '))
-
-        print('Второй игрок: ')
-        self.op_name = input('Введите имя второго игрока: ')
-        self.op_is_comp = int(input(f'{self.op_name} - человек или компьютер? 0 - человек, 1 - компьютер: '))
-
-        player = Playing_Card(self.pl_name, computer=self.pl_is_comp)
-        opponent = Playing_Card(self.op_name, computer=self.op_is_comp)
-
-        print('\nИгра начинаеться.\n')
-
+    def _check_human(self, card):
         while True:
+            result = input('Зачеркнуть цифру? (Y/N)')
+            if result != 'Y' and result != 'N' and result != 'y' and result != 'n':
+                print('Не верное значение. Введите Y или N!')
+            elif result == 'Y' or result == 'y':
+                result = True
+                break
+            elif result == 'N' or result == 'n':
+                result = False
+                break
 
-            barrel_bag.show_barrel()
-            print(f'\nСледующий бочонок: {barrel_bag.number} (осталось {len(barrel_bag.barrel_list)}) \n')
+        if result:
+            if self.barrel_bag.number not in card.get_cart_items():
+                raise PlayerException(message='Игра окончена, проигравший:', player=card.name)
+            else:
+                card.del_item(self.barrel_bag.number)
+        else:
+            if self.barrel_bag.number in card.get_cart_items():
+                raise PlayerException(message='Игра окончена, проигравший:', player=card.name)
 
-            player.open_card()
-            opponent.open_card()
+    def _check_robot(self, card):
+        if self.barrel_bag.number in card.get_cart_items():
+            card.del_item(self.barrel_bag.number)
 
-            if self.check(player, barrel_bag) is False or self.check(opponent, barrel_bag) is False or self.check_win(
-                    player) is False or self.check_win(opponent) is False:
-                return False
+    def _check(self):
+        try:
+            self._check_type()
+        except PlayerException as e:
+            return e
+        return self._check_win()
 
-            print('')
+    def _check_win(self):
+        wins = []
+        for player in self.players:
+            _, card = player
+            if card.get_len() == 0:
+                wins.append(card)
+        return wins or None
+
+    @classmethod
+    def run_game(cls):
+        self = cls()
+
+        self.barrel_bag = Barrels()
+
+        for i in range(1, self.max_players+1):
+            _temp_player_name = input(f'Введите имя игрока #{i}:')
+            _temp_player_type = int(input(f'Введите тип игрока #{i} (человек = 1, компьютер = 0):'))
+            _temp_player_game_name = 'Игрок' if _temp_player_type else 'Компьютер'
+
+            self.players.append((_temp_player_type, Playing_Card(_temp_player_name, game_name=_temp_player_game_name)))
+
+        self.barrel_bag.show_barrel()
+        while len(self.barrel_bag.barrel_list) > 0:
+
+            self.barrel_bag.show_barrel()
+            print(f'\nСледующий бочонок: {self.barrel_bag.number} (осталось {len(self.barrel_bag.barrel_list)}) \n')
+            for card in [card[1] for card in self.players]:
+                card.open_card()
+
+            _check = self._check()
+            if isinstance(_check, PlayerException):
+                print(_check.message + ' ' + _check.player)
+                break
+            elif _check is not None:
+                if len(_check) > 1:
+                    print(f'Ничья: {", ".join([p.name for p in _check])}')
+                else:
+                    print(f'Выйграл: {_check[0].name}')
+                break
 
 
 if __name__ == '__main__':
-    start_game = Game()
+    Game.run_game()
