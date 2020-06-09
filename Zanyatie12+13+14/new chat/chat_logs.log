@@ -1,0 +1,13 @@
+2020-06-09 20:34:03,319 INFO  log_config wrap_log This function was called
+2020-06-09 20:38:58,022 INFO  log_config wrap_log This function was called
+2020-06-09 20:41:58,390 INFO  log_config wrap_log Function receiving was called
+2020-06-09 20:50:52,102 INFO  log_config wrap_log Function receiving was called with attributes <method-wrapper '__getattribute__' of function object at 0x038E7148>
+2020-06-09 20:54:08,972 INFO  log_config wrap_log Function send_response was called
+2020-06-09 21:36:26,763 INFO  log_config wrap_log Function send_response was called
+2020-06-09 21:36:27,858 INFO  log_config wrap_log Function send_response was called
+2020-06-09 21:36:27,858 INFO  log_config wrap_log Function send_response was called
+2020-06-09 21:36:29,921 INFO  log_config wrap_log Function send_response was called
+2020-06-09 21:36:29,921 INFO  log_config wrap_log Function send_response was called
+2020-06-09 21:36:29,921 INFO  log_config wrap_log Function send_response was called
+2020-06-09 21:37:45,727 INFO  log_config wrap_log Function run_server was called
+2020-06-09 21:37:49,741 INFO  log_config wrap_log Function receiving was called

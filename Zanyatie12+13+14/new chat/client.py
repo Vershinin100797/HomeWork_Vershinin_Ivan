@@ -3,6 +3,7 @@ import threading
 import time
 
 from jim import MessageBuilder
+from log_config import chat_logger
 
 
 class Client:
@@ -14,6 +15,7 @@ class Client:
     def __init__(self):
         self._client_socket.connect(self.server)
 
+    @chat_logger
     def receiving(self):
         while not self.shutdown:
             try:

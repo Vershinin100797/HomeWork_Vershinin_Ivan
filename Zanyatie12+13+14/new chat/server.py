@@ -1,7 +1,7 @@
 import socket
-import time
 
 from jim import MessageBuilder
+from log_config import chat_logger
 
 
 class Server:
@@ -12,6 +12,7 @@ class Server:
         self._server_socket.bind((host, port))
         print('Server start!')
 
+    @chat_logger
     def run_server(self):
         while True:
             try:
