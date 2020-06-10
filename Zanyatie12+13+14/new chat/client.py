@@ -29,42 +29,56 @@ class Client:
 
     @staticmethod
     def parse_response(response):
-        response = response.decode("utf-8")
-        parsed_data = MessageBuilder.get_object_of_json(response)
-        if parsed_data.teg == "response_msg":
-            print(f'Code: {parsed_data.code}. {parsed_data.message}!')
-        elif parsed_data.teg == "presence_msg":
-            print(f'\n[{parsed_data.user.name}]:: {parsed_data.message} ----- {parsed_data.time}')
+        if response:
+            response = response.decode("utf-8")
+            parsed_data = MessageBuilder.get_object_of_json(response)
+            if parsed_data.teg == "response_msg":
+                print(f'Code: {parsed_data.code}. {parsed_data.message}!')
+            elif parsed_data.teg == "presence_msg":
+                print(f'\n[{parsed_data.user.name}]:: {parsed_data.message} ----- {parsed_data.time}')
+            else:
+                print('Something goes wrong!')
         else:
-            print('Something goes wrong!')
+            raise AttributeError('invalid attribute value!')
 
     def sending(self, client_name):
-        while not self.shutdown:
-            if not self.join:
-                self._client_socket.sendto(f"[{client_name}] connected ".encode("utf-8"), self.server)
-                self.join = True
-            else:
-                try:
-                    message = input("[Your message] :: ")
-                    if message:
-                        gen_message = MessageBuilder.create_presence_message(client_name, message)
-                        gen_message_json = gen_message.encode_to_json()
-                        self._client_socket.sendto(gen_message_json.encode("utf-8"),  self.server)
-                    time.sleep(0.2)
-                except Exception as ex:
-                    print(f"Что-то пошло не так: {ex}")
-                    self.shutdown = True
+        if isinstance(client_name, str):
+            while not self.shutdown:
+                if not self.join:
+                    self._client_socket.sendto(f"[{client_name}] connected ".encode("utf-8"), self.server)
+                    self.join = True
+                else:
+                    try:
+                        message = input("[Your message] :: ")
+                        if message:
+                            gen_message = MessageBuilder.create_presence_message(client_name, message)
+                            gen_message_json = gen_message.encode_to_json()
+                            self._client_socket.sendto(gen_message_json.encode("utf-8"),  self.server)
+                        time.sleep(0.2)
+                    except Exception as ex:
+                        print(f"Что-то пошло не так: {ex}")
+                        self.shutdown = True
+        else:
+            raise TypeError('wrong variable type!')
 
     def __del__(self):
         self._client_socket.close()
 
 
+def input_name(name):
+    if isinstance(name, str):
+        return name
+    else:
+        raise TypeError('invalid name type!')
+        input_name()
+
+
 if __name__ == '__main__':
-    name = input("Name: ")
+    user_name = input("Name: ")
 
     client = Client()
 
     recv_thread = threading.Thread(target=client.receiving)
     recv_thread.start()
-    client.sending(client_name=name)
+    client.sending(client_name=input_name(user_name))
     recv_thread.join()
