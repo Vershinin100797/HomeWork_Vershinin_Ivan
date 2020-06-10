@@ -70,7 +70,6 @@ def input_name(name):
         return name
     else:
         raise TypeError('invalid name type!')
-        input_name()
 
 
 if __name__ == '__main__':
