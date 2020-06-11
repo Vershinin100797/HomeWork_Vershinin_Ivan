@@ -14,7 +14,6 @@ def chat_logger(func):
       chat_log.addHandler(open_log)
 
       chat_log.info('Function %s was called', name)
-      func(*args, **kwargs)
-      return func
+      return func(*args, **kwargs)
 
    return wrap_log
